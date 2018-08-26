@@ -2,15 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'normalize.css/normalize.css';
 import DisplayCSV from './components/DisplayCSV';
-import axios from 'axios';
-//import configureStore from './store/configureStore';
-
-//const store = configureStore();
-
-/* const jsx = (
-  <Provider store={store}>
-  </Provider>
-); */
 
 class Test extends React.Component {
   state = {

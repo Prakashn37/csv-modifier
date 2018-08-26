@@ -1,8 +1,4 @@
 import React from 'react';
-import $ from 'jquery';
-
-let CSV, rows;
-
 
 
 export default class DisplayCSV extends React.Component {
@@ -10,16 +6,21 @@ export default class DisplayCSV extends React.Component {
         super(props);
         this.state = {
             CSV: [[[['loading']]], [[['loading']]]],
-            clickBuffer: ''
+            clickBuffer: '',
+            headerClickBuffer:''
         }
+    }
+    eraseBuffers = () => {
+        let clickBuffer = '';
+        let headerClickBuffer = '';
+        this.setState({clickBuffer,headerClickBuffer});
     }
     handleClick = (fileIndex, rowIndex, e) => {
         var clickBuffer = this.state.clickBuffer;
         clickBuffer += '' + fileIndex + rowIndex;
         this.setState({ clickBuffer });
         console.log(clickBuffer);
-        if (clickBuffer.length === 4 && (clickBuffer[1] != 0 || clickBuffer[3] != 0)) {
-            let len = this.state.clickBuffer.length;
+        if (clickBuffer.length === 4 && (clickBuffer[1] != 0 && clickBuffer[3] != 0)) {
             let CSV = this.state.CSV;
             let buf = CSV[clickBuffer[0]][clickBuffer[1]];
             CSV[clickBuffer[0]][clickBuffer[1]] = CSV[clickBuffer[2]][clickBuffer[3]];
@@ -29,6 +30,24 @@ export default class DisplayCSV extends React.Component {
 
             this.setState({ CSV, clickBuffer });
         }
+        else if (clickBuffer.length === 4) {
+            clickBuffer = '';
+            this.setState({ clickBuffer });
+        }
+    }
+    headerClick = (fileIndex, rowIndex, cellIndex, e) =>{
+        let CSV = this.state.CSV;
+        var headerClickBuffer = this.state.headerClickBuffer;
+        headerClickBuffer += '' + fileIndex + cellIndex;
+        this.setState({ headerClickBuffer });
+        if(headerClickBuffer.length === 4 && headerClickBuffer[0] === headerClickBuffer[2]){
+            let buf = CSV[headerClickBuffer[0]][0][headerClickBuffer[1]];
+            CSV[headerClickBuffer[0]][0][headerClickBuffer[1]] = CSV[headerClickBuffer[2]][0][headerClickBuffer[3]];
+            CSV[headerClickBuffer[2]][0][headerClickBuffer[3]] = buf;
+            headerClickBuffer =  '';
+            this.setState({CSV,headerClickBuffer});
+        }
+
     }
     handleDoubleClick = (fileIndex, rowIndex, cellIndex, e) => {
         let x, buf, CSV = this.state.CSV;
@@ -48,37 +67,25 @@ export default class DisplayCSV extends React.Component {
                 {
                     this.state.CSV.map((file, fileIndex) => (
                         <table style={{ margin: 10 }} className={"table-bordered col-md-5"}>
-                            {
-                                file.map((row, rowIndex) => (
-                                    <tr onClick={(e) => this.handleClick(fileIndex, rowIndex, e)}>
-                                        {
-                                            row.map((cell, cellIndex) => {
-                                                return rowIndex === 0 ? <th className={"info"}>{cell}</th> :
-                                                    <td onDoubleClick={(e) => this.handleDoubleClick(fileIndex, rowIndex, cellIndex, e)}>{cell}</td>
-                                            })
-                                        }
-                                    </tr>
-                                ))
-                            }
+                            <tbody>
+                                {
+                                    file.map((row, rowIndex) => (
+                                        <tr onClick={(e) => this.handleClick(fileIndex, rowIndex, e)}>
+                                            {
+                                                row.map((cell, cellIndex) => {
+                                                    return rowIndex === 0 ? <th onClick={(e) => this.headerClick(fileIndex, rowIndex, cellIndex, e)}className={"info"}>{cell}</th> :
+                                                        <td onDoubleClick={(e) => this.handleDoubleClick(fileIndex, rowIndex, cellIndex, e)}>{cell}</td>
+                                                })
+                                            }
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
                         </table>
                     ))
                 }
+                <button onClick={this.eraseBuffers} className={"btn btn-dark btn-block"}>Erase Selections</button>
             </div>
         )
     }
 }
-
-
-/* const promise = new Promise((resolve, reject) => {
-
-    $.get('C2ImportFamRelSample.csv', (data) => {
-        console.log('data',data);
-        CSV = data.split('\r\n');
-        CSV.pop();
-        rows = CSV.length;
-        resolve(CSV);
-    });
-    setTimeout(() => {
-        reject('failure')
-    }, 2000);
-}); */
