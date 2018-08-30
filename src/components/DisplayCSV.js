@@ -6,18 +6,19 @@ export default class DisplayCSV extends React.Component {
         super(props);
         this.state = {
             CSV: [[[['loading']]], [[['loading']]]],
-            clickBuffer: '',
-            headerClickBuffer:''
+            clickBuffer: [],
+            headerClickBuffer:[],
+            setName: ''
         }
     }
     eraseBuffers = () => {
-        let clickBuffer = '';
-        let headerClickBuffer = '';
+        let clickBuffer = [];
+        let headerClickBuffer = [];
         this.setState({clickBuffer,headerClickBuffer});
     }
     handleClick = (fileIndex, rowIndex, e) => {
         var clickBuffer = this.state.clickBuffer;
-        clickBuffer += '' + fileIndex + rowIndex;
+        clickBuffer.push(fileIndex,rowIndex);
         this.setState({ clickBuffer });
         console.log(clickBuffer);
         if (clickBuffer.length === 4 && (clickBuffer[1] != 0 && clickBuffer[3] != 0)) {
@@ -25,26 +26,26 @@ export default class DisplayCSV extends React.Component {
             let buf = CSV[clickBuffer[0]][clickBuffer[1]];
             CSV[clickBuffer[0]][clickBuffer[1]] = CSV[clickBuffer[2]][clickBuffer[3]];
             CSV[clickBuffer[2]][clickBuffer[3]] = buf;
-            clickBuffer = '';
+            clickBuffer = [];
             console.log('swapped');
 
             this.setState({ CSV, clickBuffer });
         }
         else if (clickBuffer.length === 4) {
-            clickBuffer = '';
+            clickBuffer = [];
             this.setState({ clickBuffer });
         }
     }
     headerClick = (fileIndex, rowIndex, cellIndex, e) =>{
         let CSV = this.state.CSV;
         var headerClickBuffer = this.state.headerClickBuffer;
-        headerClickBuffer += '' + fileIndex + cellIndex;
+        headerClickBuffer.push(fileIndex,cellIndex);
         this.setState({ headerClickBuffer });
         if(headerClickBuffer.length === 4 && headerClickBuffer[0] === headerClickBuffer[2]){
             let buf = CSV[headerClickBuffer[0]][0][headerClickBuffer[1]];
             CSV[headerClickBuffer[0]][0][headerClickBuffer[1]] = CSV[headerClickBuffer[2]][0][headerClickBuffer[3]];
             CSV[headerClickBuffer[2]][0][headerClickBuffer[3]] = buf;
-            headerClickBuffer =  '';
+            headerClickBuffer = [];
             this.setState({CSV,headerClickBuffer});
         }
 
@@ -58,7 +59,8 @@ export default class DisplayCSV extends React.Component {
         this.setState({ CSV });
     }
     componentDidMount() {
-        this.setState({ CSV: this.props.contents });
+        const { set } = this.props.match.params;
+        this.setState({ CSV: this.props.contents, setName:set });
     };
 
     render() {
