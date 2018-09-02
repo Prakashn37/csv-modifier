@@ -5,8 +5,12 @@
   "author": "Prakash",
   "license": "MIT",
   "scripts": {
-    "build": "webpack",
-    "dev-server": "webpack-dev-server"
+    "build:dev": "webpack",
+    "build:prod": "webpack -p --env production",
+    "dev-server": "webpack-dev-server",
+    "test": "jest --config=jest.config.json",
+    "start": "node server/server.js",
+    "heroku-postbuild": "yarn run build:prod"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -35,6 +39,13 @@
     "style-loader": "0.18.2",
     "validator": "8.0.0",
     "webpack": "3.1.0",
+    "webpack-dev-server": "2.5.1"
+  },
+  "devDependencies": {
+    "enzyme": "2.9.1",
+    "enzyme-to-json": "1.5.1",
+    "jest": "20.0.4",
+    "react-test-renderer": "15.6.1",
     "webpack-dev-server": "2.5.1"
   }
 }
