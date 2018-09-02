@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 import 'normalize.css/normalize.css';
 import AppRouter from './routers/router';
 
-if(!JSON.parse(localStorage.getItem('csvModifierStore'))){
+if(localStorage.getItem('csvModifierStore')==null){
   localStorage.setItem('csvModifierStore',JSON.stringify({}));
-} 
+}
+const set1 = JSON.parse(localStorage.getItem('csvModifierStore')); 
 
-ReactDOM.render(<AppRouter />, document.getElementById('app'));
+ReactDOM.render(<AppRouter match={set1} />, document.getElementById('app'));
