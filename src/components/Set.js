@@ -52,16 +52,12 @@ export default class Set extends React.Component {
     ));
   }
   componentDidMount() {
-    if(this.props.location.state && this.props.location.state.referrer){
-      this.setState({setName:this.props.location.state.referrer});
-      console.log('referrer',this.props.location.state.referrer);
-      let setName = this.props.location.state.referrer;
+      let setName = this.props.match.params.set;
       let pathName = "/" + setName + "/";
       this.setState(()=>({
         setName,
         pathName
       }));
-    }
 }
 
   render() {
@@ -70,11 +66,11 @@ export default class Set extends React.Component {
 
         {this.state.filesArray.length == 0 ?
           <div>
-            <h3>Instructions:</h3>
+            <h3>Instructions</h3>
             <ul className="list-group">
               <li>Please upload CSV files only</li>
               <li>Keep the input file small</li>
-              <li>To change the value in a cell, double click on the cell</li>
+              <li>To change the value of a cell, double click on the cell</li>
             </ul>
           </div> : <p></p>}
         {this.state.filesArray.length == 4 ? <h3>You can't choose any more files</h3>

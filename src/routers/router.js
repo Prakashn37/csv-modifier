@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch, Link, NavLink } from 'react-router-dom';
 import DisplayCSV from '../components/DisplayCSV';
 import Dashboard from '../components/Dashboard';
 import Set from '../components/Set';
+import NotFoundPage from '../components/NotFoundPage';
 
 
 const AppRouter = () => (
@@ -12,6 +13,7 @@ const AppRouter = () => (
         <Route path="/" component={Dashboard} exact={true} />
         <Route path="/upload/:set/" component={Set} />
         <Route path="/:set/" component={DisplayCSV} />
+        <Route component={NotFoundPage} />
       </Switch>
     </div>
   </BrowserRouter>

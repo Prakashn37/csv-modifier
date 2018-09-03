@@ -3,17 +3,17 @@ import { Redirect } from 'react-router-dom';
 
 export default class Dashboard extends React.Component {
     state = {
-        setsArray:[],
+        setsArray: [],
         input: "",
         error: "",
-        display:false,
-        path:"",
-        set:""
+        display: false,
+        path: "",
+        set: ""
 
     }
     componentDidMount() {
         let setsArray = Object.keys(JSON.parse(localStorage.getItem('csvModifierStore')));
-        this.setState(()=>({
+        this.setState(() => ({
             setsArray
         }));
     }
@@ -36,10 +36,10 @@ export default class Dashboard extends React.Component {
             setsArray.push(this.state.input);
             let csvModifierStore = JSON.parse(localStorage.getItem('csvModifierStore'));
             csvModifierStore[input] = {
-                filesArray:[]
+                filesArray: []
             }
-            localStorage.setItem('csvModifierStore',JSON.stringify(csvModifierStore));
-            console.log('test',localStorage.getItem('csvModifierStore'));
+            localStorage.setItem('csvModifierStore', JSON.stringify(csvModifierStore));
+            console.log('test', localStorage.getItem('csvModifierStore'));
             this.setState(() => ({
                 setsArray,
                 input
@@ -55,10 +55,12 @@ export default class Dashboard extends React.Component {
             input
         }))
     }
-    routeToSet = (e) => {
+    routeToSet = (element) => {
         let path = "";
-        let set = e.target.innerText; 
-        path = "/upload/"+e.target.innerText+"/";
+        //let set = e.target.innerText;
+        let set = element;
+        //path = "/upload/"+e.target.innerText+"/";
+        path = "/upload/" + set + "/";
         /*    if(JSON.parse(localStorage.getItem('csvModifierStore'))[e.target.innerText]["filesArray"]==[]){
             path = "/upload/"+e.target.innerText+"/";
         }
@@ -66,9 +68,9 @@ export default class Dashboard extends React.Component {
             path = "/"+e.target.innerText+"/";
         } */
         console.log(path);
-        this.setState(()=>({
+        this.setState(() => ({
             path,
-            display:true,
+            display: true,
             set
         }));
 
@@ -76,17 +78,34 @@ export default class Dashboard extends React.Component {
 
     render() {
         return (
-            <div>
-                <input type="text" placeholder="Enter new set name" autoFocus onChange={this.inputChange}></input>
-                <button onClick={this.createSet}>Create set</button>
+            <div style={{ margin: 10 }}>
+                <div className={"form-group row"}>
+                    <div className="col-xs-3">
+                        <input style={{ marginLeft: 10 }} type="text" className="form-control" placeholder="Enter new set name" autoFocus onChange={this.inputChange}></input>
+                    </div>
+                    <div style={{ margin: 10 }}>
+                    </div>
+                    <div className={"col-xs-3"}>
+                    <button className="form-control btn btn-success" onClick={this.createSet}>Create set</button>
+                    </div>
+                </div>
                 <p className="text-danger">{this.state.error}</p>
                 <br />
+                <h3>Existing set(s)</h3>
                 {
-                    this.state.setsArray.map((element) => (<button onClick={this.routeToSet}>{element}</button>))
+                    this.state.setsArray.map((element) =>
+                        (
+                            <div class="btn-group" style={{ margin: 10 }}>
+                                <button type="button" class="btn btn-outline-dark"
+                                    onClick={(e) => this.routeToSet(element, e)}>
+                                    <i class="material-icons">&#xe2c8;</i>{element}
+                                </button>
+                            </div>))
                 }
-                {this.state.display?<Redirect to={{
-                    pathname:this.state.path, 
-                    state:{referrer:this.state.set}}} />:''}
+                {this.state.display ? <Redirect to={{
+                    pathname: this.state.path,
+                    state: { referrer: this.state.set }
+                }} /> : ''}
             </div>
         )
     }

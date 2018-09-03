@@ -8,7 +8,8 @@ export default class DisplayCSV extends React.Component {
             CSV: [[[['loading']]], [[['loading']]]],
             clickBuffer: [],
             headerClickBuffer: [],
-            setName: ''
+            setName: '',
+            message:''
         }
     }
     eraseBuffers = () => {
@@ -61,7 +62,14 @@ export default class DisplayCSV extends React.Component {
     saveChanges = () => {
         let CSV = JSON.parse(localStorage.getItem('csvModifierStore'));
         CSV[this.state.setName]["filesArray"] = this.state.CSV;
-        localStorage.setItem('csvModifierStore',JSON.stringify(CSV));
+        localStorage.setItem('csvModifierStore', JSON.stringify(CSV));
+        this.setState(()=>({message:'Changes saved'}));
+        setTimeout(() => {
+            this.setState(()=>({message:''})); 
+        }, 1000);
+    }
+    dashboardPage = () => {
+        this.props.history.push('/');
     }
     componentDidMount() {
         if (this.props.location.state && this.props.location.state.referrer) {
@@ -71,9 +79,9 @@ export default class DisplayCSV extends React.Component {
             }));
         }
         setTimeout(() => {
-            if(this.state.setName != ''){
+            if (this.state.setName != '') {
                 let CSV = JSON.parse(localStorage.getItem('csvModifierStore'))[this.state.setName]["filesArray"];
-                this.setState(()=>({CSV}));
+                this.setState(() => ({ CSV }));
             }
         }, 100);
 
@@ -83,30 +91,35 @@ export default class DisplayCSV extends React.Component {
     render() {
         return (
             <div>
-            <button onClick={this.saveChanges} className={"btn btn-primary btn-md"} >Save changes</button>
-            <button onClick={this.eraseBuffers} className={"btn btn-primary btn-md"}>Erase Selections</button>
-            <div className={"row"}>
-                {
-                    this.state.CSV.map((file, fileIndex) => (
-                        <table style={{ margin: 10 }} className={"table-bordered col-md-5"}>
-                            <tbody>
-                                {
-                                    file.map((row, rowIndex) => (
-                                        <tr onClick={(e) => this.handleClick(fileIndex, rowIndex, e)}>
-                                            {
-                                                row.map((cell, cellIndex) => {
-                                                    return rowIndex === 0 ? <th onClick={(e) => this.headerClick(fileIndex, rowIndex, cellIndex, e)} className={"info"}>{cell}</th> :
-                                                        <td onDoubleClick={(e) => this.handleDoubleClick(fileIndex, rowIndex, cellIndex, e)}>{cell}</td>
-                                                })
-                                            }
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                    ))
-                }
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <button onClick={this.dashboardPage} className="btn btn-outline-secondary">Dashboard</button>
+                <button onClick={this.saveChanges} className="btn btn-outline-secondary" >Save changes</button>
+                <button onClick={this.eraseBuffers} className="btn btn-outline-secondary">Erase Selections</button>
+                </div>
                 <br/>
+                <p>{this.state.message}</p>
+                <div className={"row"}>
+                    {
+                        this.state.CSV.map((file, fileIndex) => (
+                            <table style={{ margin: 10 }} className={"table-bordered col-md-5"}>
+                                <tbody>
+                                    {
+                                        file.map((row, rowIndex) => (
+                                            <tr onClick={(e) => this.handleClick(fileIndex, rowIndex, e)}>
+                                                {
+                                                    row.map((cell, cellIndex) => {
+                                                        return rowIndex === 0 ? <th onClick={(e) => this.headerClick(fileIndex, rowIndex, cellIndex, e)} className={"info"}>{cell}</th> :
+                                                        <td onDoubleClick={(e) => this.handleDoubleClick(fileIndex, rowIndex, cellIndex, e)}>{cell}</td>
+                                                    })
+                                                }
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                            </table>
+                        ))
+                    }
+                    <br />
                 </div>
 
             </div>
