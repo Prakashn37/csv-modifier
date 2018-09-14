@@ -1,6 +1,5 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import DisplayCSV from './DisplayCSV';
 
 export default class Set extends React.Component {
   constructor(props) {
