@@ -1,5 +1,6 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Route } from 'react-router-dom';
+import DisplayCSV from './DisplayCSV';
 
 export default class Set extends React.Component {
   constructor(props) {
@@ -49,9 +50,11 @@ export default class Set extends React.Component {
     this.setState(()=>(
       { submitted: true, redirect: true }
     ));
+    this.props.history.push(this.state.pathName);
   }
   componentDidMount() {
       let setName = this.props.match.params.set;
+      console.log('fileset',this.props.match.params.set);
       let pathName = "/" + setName + "/";
       this.setState(()=>({
         setName,
@@ -88,9 +91,7 @@ export default class Set extends React.Component {
         </button>
         <button onClick={this.continue} className={"btn btn-dark btn-block"}>Continue with existing data</button>
         {
-          this.state.redirect?<Redirect to={{
-            pathname:this.state.pathName, 
-            state:{referrer:this.state.setName}}} />:''
+          this.state.redirect?<Route path={this.state.pathName.toString()} component={DisplayCSV}/>:''
         }
       </div>
     )

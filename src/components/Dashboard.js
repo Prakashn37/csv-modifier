@@ -68,6 +68,7 @@ export default class Dashboard extends React.Component {
             path = "/"+e.target.innerText+"/";
         } */
         console.log(path);
+        this.props.history.push(path);
         this.setState(() => ({
             path,
             display: true,
@@ -95,17 +96,13 @@ export default class Dashboard extends React.Component {
                 {
                     this.state.setsArray.map((element) =>
                         (
-                            <div class="btn-group" style={{ margin: 10 }}>
-                                <button type="button" class="btn btn-outline-dark"
+                            <div className="btn-group" style={{ margin: 10 }}>
+                                <button type="button" className="btn btn-outline-dark"
                                     onClick={(e) => this.routeToSet(element, e)}>
-                                    <i class="material-icons">&#xe2c8;</i>{element}
+                                    <i className="material-icons">&#xe2c8;</i>{element}
                                 </button>
                             </div>))
                 }
-                {this.state.display ? <Redirect to={{
-                    pathname: this.state.path,
-                    state: { referrer: this.state.set }
-                }} /> : ''}
             </div>
         )
     }
